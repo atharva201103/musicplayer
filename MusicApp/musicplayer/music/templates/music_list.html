@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Music List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        button {
+            background: #007BFF;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #player-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+        #player-controls button, #player-controls input {
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Music List</h1>
+        <a href="{% url 'add_music' %}">Add Music</a>
+        <ul>
+            {% for music in musics %}
+                <li>
+                    {{ music.title }} by {{ music.artist }}
+                    <button onclick="playMusic('{{ music.file.url }}')">Play</button>
+                </li>
+            {% endfor %}
+        </ul>
+        <div id="player-controls">
+            <button onclick="play()">Play</button>
+            <button onclick="pause()">Pause</button>
+            <button onclick="skip()">Skip</button>
+            <input type="range" id="volume" min="0" max="1" step="0.1" onchange="setVolume(this.value)">
+        </div>
+        <audio id="audio-player"></audio>
+    </div>
+
+    <script>
+        let audioPlayer = document.getElementById('audio-player');
+        let playlist = [];
+        let currentIndex = 0;
+
+        document.querySelectorAll('button[onclick^="playMusic"]').forEach((button, index) => {
+            playlist.push(button.getAttribute('onclick').match(/'(.*)'/)[1]);
+        });
+
+        function playMusic(url) {
+            audioPlayer.src = url;
+            audioPlayer.play();
+        }
+
+        function play() {
+            audioPlayer.play();
+        }
+
+        function pause() {
+            audioPlayer.pause();
+        }
+
+        function skip() {
+            currentIndex = (currentIndex + 1) % playlist.length;
+            playMusic(playlist[currentIndex]);
+        }
+
+        function setVolume(volume) {
+            audioPlayer.volume = volume;
+        }
+    </script>
+</body>
+</html>

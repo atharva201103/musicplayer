@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Playlists</title>
+</head>
+<body>
+    <h1>Playlists</h1>
+    <a href="{% url 'add_playlist' %}">Add Playlist</a>
+    <ul>
+        {% for playlist in playlists %}
+            <li>{{ playlist.name }} - {{ playlist.musics.all|join:", " }}</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'music_list' %}">Music List</a>
+</body>
+</html>
